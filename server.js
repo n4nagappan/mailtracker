@@ -5,14 +5,16 @@ var fs = require('fs');
 var port = process.env.port || 1337;
 var app = express();
 var map = {};
-app.set("trust proxy", true);
 
+// serve requests for unique tracking image ID
 app.get('/reqImage',function(req,res){
 	var uid = guidGenerator();
 	map[uid] = {};
 	map[uid].status = false;
 	res.send(uid);
 });
+
+// track requests sent from email and mark the respective mail as read
 app.get('/:uid',function (req, res) {
 	if(map[req.params.uid])
 	{
@@ -23,6 +25,7 @@ app.get('/:uid',function (req, res) {
 	res.sendfile('res/0.gif');   
 });
 
+// to show current read status of mails 
 app.get('/',function(req,res){
 	res.send(JSON.stringify(map,undefined,2));
 });
