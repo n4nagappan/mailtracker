@@ -11,7 +11,9 @@ app.get('/reqImage',function(req,res){
 	var uid = guidGenerator();
 	map[uid] = {};
 	map[uid].status = false;
-	res.send(uid);
+	map[uid].timeRead = [];
+	map[uid].count = 0; 
+	res.send(uid); 
 });
 
 // track requests sent from email and mark the respective mail as read
@@ -19,13 +21,15 @@ app.get('/:uid',function (req, res) {
 	if(map[req.params.uid])
 	{
 		map[req.params.uid].status = true;
-		map[req.params.uid].timeRead = new Date();
+		map[req.params.uid].timeRead.push(new Date());
+		map[req.params.uid].count += 1;
+		map[req.params.uid].bit = req.query.bit;		
 	}
 	
 	res.sendfile('res/0.gif');   
 });
 
-// to show current read status of mails 
+// to show current read status of mails
 app.get('/',function(req,res){
 	res.send(JSON.stringify(map,undefined,2));
 });
